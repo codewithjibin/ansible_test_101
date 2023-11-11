@@ -1,0 +1,5 @@
+---
+- name: Restart Azure Web App
+  hosts: azure_webapps
+  roles:
+    - azure_webapp_restart

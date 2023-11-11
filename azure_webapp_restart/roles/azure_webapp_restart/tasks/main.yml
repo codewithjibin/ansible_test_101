@@ -1,0 +1,16 @@
+---
+- name: Configure Azure CLI with Service Principal
+  shell: |
+    az login --service-principal -u {{ azure_sp_client_id }} -p {{ azure_sp_client_secret }} --tenant {{ azure_sp_tenant_id }} --subscription {{ azure_subscription_id }}
+  args:
+    executable: /bin/bash
+  register: azure_login
+  changed_when: false
+  when: azure_login.failed and "'The client '(.*)' with object id '(.*)' does not have permission to perform action' not in azure_login.stderr_lines[0]"
+
+- name: Restart Azure Web App
+  shell: |
+    az webapp restart --name mywebapp --resource-group myresourcegroup
+  args:
+    executable: /bin/bash
+  register: restart_result
